@@ -1,0 +1,47 @@
+{% extends 'banner.html.twig' %}
+{% block content %}
+<div id="content-wrapper" class="wrapper">
+    <section id="requests-container" class="container">
+        <h2>User Requests</h2>
+        <ul id="form-options">
+            <li id="add" class="option active">Add User</li>
+            <li id="update" class="option">Update User</li>
+        </ul>
+        <form id="request-form" class="form" method="" action="{{ action }}">
+            <input id="userId" type="hidden" name="userId" />
+            <input id="fname" class="text-input" type="text" name="FirstName" placeholder="First Name" />
+            <input id="surname" class="text-input" type="text" name="Surname" placeholder="Surname" />
+            <input id="dob" class="text-input" type="date" name="DateOfBirth" />
+            <input id="phoneNo" class="text-input" type="tel" name="PhoneNumber" placeholder="UK Phone Number (e.g. 07845213465)" />
+            <input id="email" class="text-input" type="email" name="Email" placeholder="Email" />
+
+            <p id="request-message" class="message"></p>
+
+            <button id="button-submit" class="submit">Submit</button>
+            <button id="button-delete" class="submit">Delete User</button>
+        </form>
+    </section>
+    <section id="display-container" class="container">
+        <h2>Users</h2>
+        <form id="search-form" class="form" method="" action="">
+             <input id="search" class="text-input" type="text" name="search" placeholder="Search..." />
+             <button id="button-search" class="btn">Search</button>
+        </form>
+        <p id="user-message" class="message"></p>
+        <div id="table-container" class="container">
+            <table id="user-table" class="table">
+                <tbody>
+                    <tr id="table-header">
+                        <th>User ID</th>
+                        <th>First Name</th>
+                        <th>Surname</th>
+                        <th>Date Of Birth</th>
+                        <th>Phone Number</th>
+                        <th>Email</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}

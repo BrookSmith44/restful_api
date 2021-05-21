@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    height: 100vh;
+}
+
+header {
+    height: 10%;
+}
+
+header, .wrapper, .container, #form-options, .form {
+    display: flex;
+    align-items: center;
+}
+
+header, #form-options {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.container, .form, #content-wrapper {
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+header h1 {
+    background-color: rgba(142,193,0, .5);
+    border-bottom: 5px solid #8ec100;
+    color: white;
+    padding: 0 20px 0 20px;
+    text-shadow: 1px 1px black;
+}
+
+.wrapper {
+    height: 90%;
+}
+
+.container {
+    width: 100%;
+}
+
+#request-container:nth-child(odd) {
+    border-right: 1px solid lightgrey;
+}
+
+h2 {
+    color: #8ec100;
+    margin: 20px 0;
+}
+
+.message {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 25px;
+    margin: 10px 0;
+    padding: 5px 10px;
+    font-weight: bolder;
+    color: white;
+    display: none;
+}
+
+.error {
+    border: 2px solid red;
+    background-color: rgba(255, 0, 0, .5);
+}
+
+.success {
+    border: 2px solid #8ec100;
+    background-color: rgba(142,193,0, .5);;
+}
+
+/* Requests container */
+
+#form-options {
+    list-style: none;
+    box-shadow: 2px 2px 5px  black;
+    margin: 10px;
+    width: 80%;
+    text-align: center;
+}
+
+#form-options li {
+    width: 50%;
+    cursor: pointer;
+    padding: 5px 0;
+}
+
+.active {
+    background-color: #8ec100;
+    color: white;
+    text-shadow: 1px 1px 2px  black;
+}
+
+.form {
+    width: 80%;
+}
+
+.text-input {
+    width: 100%;
+    font-size: 1.2em;
+    border-bottom: 2px solid #8ec100;
+    padding: 20px 0 0 0;
+}
+
+.text-input:focus {
+    outline: none;
+}
+
+.submit {
+    margin: 20px 0;
+    width: 150px;
+    height: 50px;
+    color: white;
+    font-size: 1.2em;
+    border-radius: 20px;
+    box-shadow: 3px 3px 1px rgba(100, 100, 100, 1);
+    border: 2px solid;
+    transition: background-color .5s, color .5s;
+    cursor: pointer;
+}
+
+#button-submit {
+    background-color: #8ec100;
+    border-color: #8ec100;
+}
+
+#button-delete {
+    background-color: red;
+    border-color: red;
+    display: none;
+}
+
+.submit:active {
+    -webkit-animation: animateTop .1s;
+}
+
+@keyframes animateTop {
+    from {
+      transform :
+          translateY(0%)
+          translateX(0%);
+          box-shadow: 3px 3px 1px rgba(100, 100, 100, 1);
+    }
+  
+    to {
+      transform: 
+      translateY(3%)
+      translateX(3%);
+      box-shadow: 0px 0px 0px rgba(100, 100, 100, 0);
+    }
+  }
+
+/* Users container */
+#search-form {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+#search-form input {
+    padding: 0;
+}
+
+#search-form button {
+    font-size: 1.2em;
+    padding: 1px 10px;
+    background-color: #8ec100;
+    color: white;
+    cursor: pointer;
+}
+
+#table-container {
+    width: 100%;
+    overflow-y: auto;
+}
+
+.table {
+    border-collapse: collapse;
+    overflow-y: scroll;
+    margin: 0 0 20px 0;
+    width: 90%;
+}
+
+.table td, .table th {
+    padding: 10px 5px;
+    text-align: center;
+}
+
+#table-header {
+    background-color: #8ec100;
+    color: white;
+    cursor: default;
+}
+
+.table tr {
+    cursor: pointer;
+}
+
+.table tr:nth-child(odd) {
+    background-color: rgba(142,193,0, .5);
+    color: white;
+    text-shadow: 1px 1px 2px  black;
+}
+
+.table tr:nth-child(even) {
+    background-color: #eeee;
+}
+
+.table tr:hover {
+    background-color: #ccc;
+    color: white;
+}
+
+#table-container::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+#table-container::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #ccc;
+}
+
+#table-container::-webkit-scrollbar-thumb:hover {
+    background-color: darkgrey;
+}
+
+@media only screen and (min-width : 1030px) {
+    #content-wrapper {
+        flex-direction: row;
+    }
+
+    .container {
+        width: 50%;
+        height: 100%;
+    }
+}
