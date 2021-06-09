@@ -1,10 +1,11 @@
+// Set authentication token in local storage
 setAuthenticationToken();
 // Set interval to get user list to start off with to ensure key has been set
 const interval = setInterval(function() {
     // Get api key
     const apiKey = localStorage.getItem('key');
     if (apiKey !== null) {
-        httpRequest('get', 'http://localhost:8080/REST_API/public/api/users/fetch', 'getUsers', '');
+        httpRequest('get', 'http://localhost:8080/REST_API/public/api/users/fetch?auth=' + apiKey, 'getUsers', '');
         clearInterval(interval);
     }
 }, 10);
@@ -72,11 +73,14 @@ submit.addEventListener('click', function(event) {
         // Get element with active class assigned
         const active = document.getElementsByClassName('active')[0];
 
+        // Get api key
+        const apiKey = localStorage.getItem('key');
+
         // Decipher which request to send based on active element
         switch(active.id) {
             case 'add':
                 // Send http request
-                httpRequest('post', 'http://localhost:8080/REST_API/public/api/users/insert', 'updateUser', user);
+                httpRequest('post', 'http://localhost:8080/REST_API/public/api/users/insert?auth=' + apiKey, 'updateUser', user);
                 break;
             case 'update':
                 // make sure user has been selected before sending request
@@ -85,7 +89,7 @@ submit.addEventListener('click', function(event) {
                 // check validation came back true
                 if (validated['userId'] == true) {
                     // Create url for api with user id as route parameter
-                    const url = 'http://localhost:8080/REST_API/public/api/users/update/' + requestForm['userId'].value;
+                    const url = 'http://localhost:8080/REST_API/public/api/users/update/' + requestForm['userId'].value + '?auth=' + apiKey;
                     // Send http request
                     httpRequest('put', url, 'updateUser', user);
                 }
@@ -116,8 +120,10 @@ deleteButton.addEventListener('click', function(event) {
 
      // check validation came back true
      if (validated['userId'] == true) {
+         // Get api key
+        const apiKey = localStorage.getItem('key');
          // Create url
-        const url = 'http://localhost:8080/REST_API/public/api/users/delete/' + requestForm['userId'].value;
+        const url = 'http://localhost:8080/REST_API/public/api/users/delete/' + requestForm['userId'].value + '?auth=' + apiKey;
         // Send request
         httpRequest('delete', url, 'deleteUser', '');
      }
@@ -148,7 +154,11 @@ searchButton.addEventListener('click', function(event) {
             url += '/' + searchForm['search'].value;
         }
 
-        httpRequest('get', url, 'getUsers', '');
+        // Get api key
+        const apiKey = localStorage.getItem('key');
+
+        // Send request
+        httpRequest('get', url + '?auth=' + apiKey, 'getUsers', '');
     }
 });
 
@@ -170,6 +180,7 @@ function httpRequest(method, url, operation, data) {
 
     // Function to handle the http response
     xhr.onload = function() {
+        console.log(this.responseText);
         switch (this.status) {
             case 200:
                 // Reset form
@@ -181,7 +192,7 @@ function httpRequest(method, url, operation, data) {
                 // Reset form
                 resetForm();
                 // Update user table if user has been added or updated in the system
-                httpRequest('get', 'http://localhost:8080/REST_API/public/api/users/fetch', 'getUsers', '');
+                httpRequest('get', 'http://localhost:8080/REST_API/public/api/users/fetch?auth=' + apiKey, 'getUsers', '');
                 // Get message element
                 const requestElement = document.getElementById('request-message');
                 // decode message
@@ -236,8 +247,10 @@ function status200Response(operation, response) {
             }
             break;
         case 'deleteUser':
+            // Get api key
+            const apiKey = localStorage.getItem('key');
             // Update user table if user has been added or updated in the system
-            httpRequest('get', 'http://localhost:8080/REST_API/public/api/users/fetch', 'getUsers', '');
+            httpRequest('get', 'http://localhost:8080/REST_API/public/api/users/fetch?auth=' + apiKey, 'getUsers', '');
             // Get message element
             const element = document.getElementById('request-message');
             // Create successful message

@@ -11,36 +11,36 @@
  use Firebase\JWT\JWT;
 
  class Authentication {
-     // Properties
-     private $key;
-     private $libsodium_wrapper;
-     private $base64_wrapper;
+    // Properties
+    private $key;
+    private $libsodium_wrapper;
+    private $base64_wrapper;
+    private $api_key;
 
-     // Magic methods
-     public function __construct() {
-         $this->key = null;
-         $this->libsodium_wrapper = null;
-         $this->base64_wrapper = null;
-     }
+    // Magic methods
+    public function __construct($logger) {
+        $this->key = null;
+        $this->libsodium_wrapper = null;
+        $this->base64_wrapper = null;
+        $this->api_key = null;
+        $this->logger = $logger;
+    }
 
-     public function __destruct() {
-          // Overwite key with 0's once all references to class have ended
+    public function __destruct() {
+        // Overwite key with 0's once all references to class have ended
         if ($this->key != null) {
             sodium_memzero($this->key);
         }
-     }
-     // Setter methods
-     public function setKey() {
-         // Set key
+    }
+    
+    // Setter methods
+    public function setKey() {
+        // Set key
         $this->key = 'fudge the rabbit likes big hopsz';
-     }
-
-     public function setLibsodium($libsodium_wrapper) {
-        $this->libsodium_wrapper = $libsodium_wrapper;
     }
 
-    public function setBase64($base64_wrapper) {
-        $this->base64_wrapper = $base64_wrapper;
+    public function setApiKey($api_key) {
+        $this->api_key = $api_key;
     }
 
     public function setLogger($logger) {
@@ -79,15 +79,10 @@
         // Set local variables
         $key = $this->key;
         $logger = $this->logger;
-        $base64_wrapper = $this->base64_wrapper;
-        $libsodium_wrapper = $this->libsodium_wrapper;
 
-        // Variable to store headers
-        $headers = apache_request_headers();
-
-        if (isset($headers['Authorization'])) {
+        if (isset($this->api_key)) {
             // Get authorization token from header
-            $encrypted_token = $headers['Authorization'];
+            $token = $this->api_key;
 
             // Variable to store success of authorization
             $authorization_success = [
@@ -95,11 +90,6 @@
             ];
 
             try {
-                // Decrypt token
-                $token = $libsodium_wrapper->decryption(
-                    $base64_wrapper,
-                    $encrypted_token
-                );
                 // Decode token
                 $decoded_token = JWT::decode($token, $key, array('HS256'));
             } catch (\Exception $exception) {

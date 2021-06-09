@@ -10,8 +10,9 @@
         "psr-4": {
             "Database\\": "app/src/Database/",
             "Model\\": "app/src/Models/",
-            "Validation\\": "app/src/Validation",
-            "Encryption\\": "app/src/Encryption"
+            "Controller\\": "app/src/Controllers/",
+            "Validation\\": "app/src/Validation/",
+            "Encryption\\": "app/src/Encryption/"
         }
     }
 }

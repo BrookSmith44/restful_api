@@ -33,9 +33,9 @@ $container['databaseWrapper'] = function() {
 };
 
 // Create database wrapper container
-$container['authentication'] = function() {
+$container['authentication'] = function($container) {
     // Get class using autoloader
-    $authentication = new \Validation\Authentication();
+    $authentication = new \Validation\Authentication($container['logger']);
     // Return class
     return $authentication;
 };
@@ -49,9 +49,9 @@ $container['validator'] = function() {
 };
 
 // Create user model container
-$container['userModel'] = function() {
+$container['userModel'] = function($container) {
     // Get class using autoloader
-    $userModel = new \Model\userModel();
+    $userModel = new \Model\userModel($container['logger']);
     // Return class
     return $userModel;
 };

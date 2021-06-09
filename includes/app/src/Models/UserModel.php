@@ -18,17 +18,11 @@ namespace Model;
     private $dob;
     private $phoneNo;
     private $email;
-    private $key;
     private $db_wrapper;
-    private $connection_settings;
-    private $sql_queries;
-    private $libsodium_wrapper;
-    private $base64_wrapper;
-    private $authentication;
     private $logger;
 
     // Magic construct and destruct methods
-    public function __construct() {
+    public function __construct($logger) {
         $this->search_param = null;
         $this->id = null;
         $this->fname = null;
@@ -36,14 +30,8 @@ namespace Model;
         $this->dob = null;
         $this->phoneNo = null;
         $this->email = null;
-        $this->key = null;
-        $this->db_wrapper = null;
-        $this->connection_settings = null;
-        $this->sql_queries = null;
-        $this->libsodium_wrapper = null;
-        $this->base64_wrapper = null;
-        $this->authentication = null;
-        $this->logger = null;
+        $this->db_wrapper = new \Database\DatabaseWrapper;
+        $this->logger = $logger;
     }
 
     public function __destruct() {}
@@ -77,28 +65,8 @@ namespace Model;
         $this->email = $email;
     }
 
-    public function setDbWrapper($db_wrapper) {
-        $this->db_wrapper = $db_wrapper;
-    }
-
     public function setConnectionSettings($connection_settings) {
         $this->connection_settings = $connection_settings;
-    }
-
-    public function setSqlQueries($sql_queries) {
-        $this->sql_queries = $sql_queries;
-    }
-
-    public function setLibsodium($libsodium_wrapper) {
-        $this->libsodium_wrapper = $libsodium_wrapper;
-    }
-
-    public function setBase64($base64_wrapper) {
-        $this->base64_wrapper = $base64_wrapper;
-    }
-
-    public function setAuthentication($authentication) {
-        $this->authentication = $authentication;
     }
 
     public function setLogger($logger) {
@@ -110,69 +78,44 @@ namespace Model;
     public function connect() {
         // Set local variables
         $db_wrapper = $this->db_wrapper;
-        $authentication = $this->authentication;
-        $connection_settings = $this->connection_settings;
         $logger = $this->logger;
         $success = [];
-        // Set authentication properties
-        $authentication->setLibsodium($this->libsodium_wrapper);
-        $authentication->setBase64($this->base64_wrapper);
-        $authentication->setLogger($logger);
 
-        // Authenticate before allowing access to database
-        $authorization = $this->authentication->authenticate();
+        // Set database properties
+        $db_wrapper->setLogger($logger);
 
-        // Check if authorization has been successful
-        if ($authorization['result'] == true) {
-            // Set database properties
-            $db_wrapper->setDbConnectionSettings($connection_settings);
-            $db_wrapper->setLogger($logger);
+        // Make connections
+        $success['result'] = $db_wrapper->makeDbConnection();
 
-            // Make connections
-            $success['result'] = $db_wrapper->makeDbConnection();
-
-            if ($success['result'] == false) {
-                $success['message'] = 'Failed to connect to the database';
-            }
-        } else {
-            $success = [
-                'result' => false,
-                'message' => 'Token Authentication Failed',
-                'status' => 401
-            ];
+        if ($success['result'] == false) {
+            $success['message'] = 'Failed to connect to the database';
         }
 
         return $success;
     }
 
-    public function getUsers() {
+    public function getUsers($query_string) {
         // Make database connection 
         $connection_success = $this->connect();
 
         // Set local variables
-        $sql_queries = $this->sql_queries;
-        $db_wrapper = $this->db_wrapper;
         $search_param = $this->search_param;
+        $db_wrapper = $this->db_wrapper;
+
         // Empty array for results
         $results = [];
 
         // Check if connection was made successfully
         if ($connection_success['result'] == true) {
 
-            if ($search_param !== null) {
+            if (isset($search_param)) {
+                // Get specific user query string
                 // Set empty parameters
-                $query_parameters =[
+                $query_parameters = [
                     ':param_search' => '%' . $search_param . '%'
                 ];
-
-                // Get specific user query string
-                $query_string = $sql_queries->searchUser();
             } else {
-                // Set empty parameters
-                $query_parameters =[];
-
-                // Get all users query string
-                $query_string = $sql_queries->getAllUsers();
+                $query_parameters = [];
             }
 
             // Retrieve query results from database
@@ -200,12 +143,11 @@ namespace Model;
         return $results;
     }
 
-    public function createUser() {
+    public function createUser($query_string) {
         // Make database connection
         $connection_success = $this->connect();
 
         // Set local variables
-        $sql_queries = $this->sql_queries;
         $db_wrapper = $this->db_wrapper;
         
         // Set local user variables
@@ -230,9 +172,6 @@ namespace Model;
                 ':param_email' => $email
             ];
 
-            // Get query string to insert user
-            $query_string = $sql_queries->insertUser();
-
             // Call database wrapper method to store data
             $store_results = [
                 'result' => $db_wrapper->storeData($query_parameters, $query_string),
@@ -251,7 +190,7 @@ namespace Model;
         return $store_results;
     }
 
-    public function updateUser() {
+    public function updateUser($query_string) {
         // Make database connection
         $connection_success = $this->connect();
 
@@ -283,9 +222,6 @@ namespace Model;
                 ':param_id' => $id
             ];
 
-            // Get query string to update user
-            $query_string = $sql_queries->updateUser();
-
             // Call database wrapper method to store data
             $store_results = [
                 'result' => $db_wrapper->storeData($query_parameters, $query_string),
@@ -304,12 +240,11 @@ namespace Model;
         return $store_results;
     }
 
-    public function deleteUser() {
+    public function deleteUser($query_string) {
         // Connect to database
         $connection_success['result'] = $this->connect();
 
         // Set local variables
-        $sql_queries = $this->sql_queries;
         $db_wrapper = $this->db_wrapper;
         
         // Set local user variables
@@ -324,9 +259,6 @@ namespace Model;
             $query_parameters = [
                 ':param_id' => $id
             ];
-
-            // Get query string to delete user
-            $query_string = $sql_queries->deleteUser();
 
             // Call database wrapper method to delete data
             $store_results = [

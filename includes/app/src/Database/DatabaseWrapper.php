@@ -42,14 +42,28 @@ namespace Database;
          $success = true;
 
          // Set local variables
-         $db_settings = $this->db_connection_settings;
+         /*$db_settings = $this->db_connection_settings;
          $host_name = $db_settings['rdbms'] . ':host=' . $db_settings['host'];
          $port_number = ';port=' . $db_settings['port'];
          $user_db = ';dbname=' . $db_settings['db_name'];
          $host_details = $host_name . $port_number . $user_db;
          $username = $db_settings['username'];
          $password = $db_settings['password'];
-         $pdo_attributes = $db_settings['options'];
+         $pdo_attributes = $db_settings['options'];*/
+
+         $db_settings = $this->db_connection_settings;
+         $host_name = 'mysql' . ':host=' . 'localhost';
+         $port_number = ';port=' . '3360';
+         $user_db = ';dbname=' . 'intouch_assessment';
+         $host_details = $host_name . $port_number . $user_db;
+         $username = 'root';
+         $password = '';
+         $pdo_attributes =[
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            \PDO::ATTR_EMULATE_PREPARES => true,
+
+        ];
 
          try {
             $pdo_handle = new \PDO($host_details, $username, $password, $pdo_attributes);
